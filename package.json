@@ -1,7 +1,7 @@
 {
   "name": "kawa",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Simplest reactive value",
   "main": "kawa.js",
   "scripts": {
     "test": "node_modules/.bin/mocha  --compilers coffee:coffee-script/register --reporter spec"
