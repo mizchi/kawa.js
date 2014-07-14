@@ -143,11 +143,3 @@ class Kawa.Junction
     for k, v of @props
       obj[k] = v.value()
     obj
-
-console.log '---', new Date
-p1 = new Kawa.Stream 0
-p2 = new Kawa.Stream 0
-chunk = new Kawa.Junction {p1: p1.value(), p2: p2.value()}, {p1: p1, p2: p2}
-
-chunk.onChange (v) -> console.log 'chunk', v
-p1.addSource(1)
