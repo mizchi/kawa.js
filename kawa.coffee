@@ -57,7 +57,6 @@ class MergeStream
     delete @_val
     Object.freeze @
 
-# MergeStream<T>
 class WaiterStream
   constructor: (@streams, @fullfilled, @callback, once = false)->
     @_onDispose = []
