@@ -64,7 +64,7 @@ s2.addSource 1
 
 `Kawa.once` has same arguments but only once.
 
-All stream has `dispose` to dispose interal callback
+All streams have `dispose` to dispose internal callbacks and others.
 
 ```coffee
 s1 = new Kawa.Stream 0
@@ -80,14 +80,30 @@ s2.dispose()
 waiter.dispose()
 ```
 
+`Kawa.Junction` is structure it has streams as properties. `onChange` callback are given non stream javascript object.
+
+```coffee
+p1 = new Kawa.Stream 0
+p2 = new Kawa.Stream 0
+junction = new Kawa.Junction {},
+  p1: p1
+  p2: p2
+junction.onChange (v) -> console.log 'junction', v #=> {p1: 1, p2: 0}
+p1.addSource(1)
+```
+
 ## APIs
 
-- Kawa.Stream
+- new Kawa.Stream(initial[, reducer])
+  - Kawa.Stream.prototype.value()
   - Kawa.Stream.prototype.addStream(val)
   - Kawa.Stream.prototype.onChange(callback)
   - Kawa.Stream.prototype.dispose()
   - Kawa.Stream.prototype.reset(val)
+- new Kawa.Junction(initial, props)
+  - Kawa.Junction.prototype.value()
+  - Kawa.Junction.prototype.onChange(callback)
+  - Kawa.Junction.prototype.dispose()
 - Kawa.merge(initial, streams, (values[, last]) -> v )
 - Kawa.wait
 - Kawa.once
-

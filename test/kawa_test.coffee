@@ -48,3 +48,13 @@ describe 'Kawa', ->
     Kawa.once [s1, s2], (([v1, v2]) -> v1 is v2 * 2), -> done()
     s1.addSource 2
     s2.addSource 1
+
+  it 'Kawa.Junction', (done) ->
+    p1 = new Kawa.Stream 0
+    p2 = new Kawa.Stream 0
+    junction = new Kawa.Junction {}, {p1: p1, p2: p2}
+    junction.onChange (v) ->
+      ok v.p1 is 1
+      ok v.p2 is 0
+      done()
+    p1.addSource(1)

@@ -15,16 +15,14 @@ class EventEmitter
     else
       @events.length = 0
 
-  trigger: ->
+  triggerChange: (v = null) ->
     @events ?= []
     for ev in @events
-      ev(@_val)
+      ev(v ? @_val)
 
   onChange: (f) ->
     @events ?= []
     @events.push f
-
-  reset: (@_val) -> @trigger()
 
 # MergeStream<T>
 class MergeStream
@@ -42,7 +40,7 @@ class MergeStream
           s.value()
 
         @_val = @reducer values, @_val
-        @trigger()
+        @triggerChange()
       s.onChange cb
       @_onDispose.push -> s.off cb
 
@@ -109,6 +107,8 @@ class Kawa.Stream
     delete @_val
     Object.freeze @
 
+  reset: (@_val) -> @triggerChange()
+
   # value :: () -> U
   value: -> @_val
 
@@ -118,5 +118,36 @@ class Kawa.Stream
     next = @reducer val, @_val
     @_val = next
     if next isnt prev
-      @trigger()
+      @triggerChange()
     @_val
+
+class Kawa.Junction
+  extend @::, EventEmitter::
+  constructor: (initial, @props)->
+    @_val = initial
+    @disposed = false
+    streams = (s for key, s of @props)
+    @_merger = Kawa.merge initial, streams, =>
+      @triggerChange(@value())
+
+  dispose: ->
+    @disposed = true
+    @_merger.dispose()
+    delete @events
+    delete @props
+    delete @_val
+    Object.freeze @
+
+  value: ->
+    obj = {}
+    for k, v of @props
+      obj[k] = v.value()
+    obj
+
+console.log '---', new Date
+p1 = new Kawa.Stream 0
+p2 = new Kawa.Stream 0
+chunk = new Kawa.Junction {p1: p1.value(), p2: p2.value()}, {p1: p1, p2: p2}
+
+chunk.onChange (v) -> console.log 'chunk', v
+p1.addSource(1)
