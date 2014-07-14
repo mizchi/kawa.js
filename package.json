@@ -1,11 +1,15 @@
 {
-  "name": "rv",
+  "name": "kawa",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "kawa.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha  --compilers coffee:coffee-script/register --reporter spec"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "mizchi",
+  "license": "MIT",
+  "devDependencies": {
+    "coffee-script": "^1.7.1",
+    "mocha": "^1.20.1"
+  }
 }
