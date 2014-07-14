@@ -1,11 +1,6 @@
 Kawa = require '../kawa'
 {ok} = require 'assert'
 
-console.log '---------', new Date
-s1 = new Kawa.Stream 0
-s2 = new Kawa.Stream 0, (newVal, lastVal) -> lastVal + newVal
-s3 = Kawa.merge 0, [s1, s2], ([v1, v2], last) -> v1 * v2 + last
-
 describe 'Kawa', ->
   beforeEach ->
     @stream = null
