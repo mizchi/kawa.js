@@ -3,11 +3,11 @@
 `kawa.js` is deadly-simple reactive programming library inspired by bacon.js.
 
 ```
-npm install mizchi/kawa
+npm install mizchi/kawa.js
 ```
 
 ```
-bower install mizchi/kawa
+bower install mizchi/kawa.js
 ```
 
 ## Features
