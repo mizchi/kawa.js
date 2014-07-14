@@ -1,27 +1,55 @@
 Kawa = require '../kawa'
+{ok} = require 'assert'
 
 console.log '---------', new Date
 s1 = new Kawa.Stream 0
 s2 = new Kawa.Stream 0, (newVal, lastVal) -> lastVal + newVal
 s3 = Kawa.merge 0, [s1, s2], ([v1, v2], last) -> v1 * v2 + last
-# s4 = Stream.merge 0, [s3], ([v3]) -> v3+1
 
-s1.onChange (v) -> console.log 's1',v
-s2.onChange (v) -> console.log 's2',v
-s3.onChange (v) -> console.log 's3',v
-# s4.onChange (v) -> console.log 's4',v
+describe 'Kawa', ->
+  beforeEach ->
+    @stream = null
 
-Kawa.when [s1, s2], (([v1, v2]) -> v1 is v2), ([v1, v2]) -> console.log 'fullfilled'
-Kawa.once [s1, s2], (([v1, v2]) -> v1 is v2), ([v1, v2]) -> console.log 'once'
+  afterEach ->
+    @stream?.dispose()
 
-s1.addSource 1
-s2.addSource 1
-# s3.dispose()
-# s2.addSource 5
-# s1.addSource -10
+  it 'Kawa.Stream id', (done) ->
+    @stream = new Kawa.Stream 0
+    ok @stream.value() is 0
+    @stream.onChange (v) =>
+      ok @stream.value() is 1
+      done()
+    @stream.addSource 1
 
-# n = true
-# setInterval ->
-#   s1.addSource if n then 1 else -1
-#   n = !n
-# , 1000
+  it 'Kawa.Stream with reducer', (done) ->
+    @stream = new Kawa.Stream 0, (newVal, lastVal) -> newVal + lastVal
+    ok @stream.value() is 0
+    @stream.onChange (v) =>
+      if @stream.value() is 5 then done()
+
+    @stream.addSource 2
+    @stream.addSource 3
+
+  it 'Kawa.merge', (done) ->
+    s1 = new Kawa.Stream 0
+    s2 = new Kawa.Stream 0
+    @stream = Kawa.merge 0, [s1, s2], ([v1, v2]) -> v1 + v2
+    @stream.onChange (v) ->
+      if v is 4 then done()
+
+    s1.addSource 2
+    s2.addSource 2
+
+  it 'Kawa.when', (done) ->
+    s1 = new Kawa.Stream 0
+    s2 = new Kawa.Stream 0
+    Kawa.when [s1, s2], (([v1, v2]) -> v1 is v2 * 2), -> done()
+    s1.addSource 2
+    s2.addSource 1
+
+  it 'Kawa.once', (done) ->
+    s1 = new Kawa.Stream 0
+    s2 = new Kawa.Stream 0
+    Kawa.once [s1, s2], (([v1, v2]) -> v1 is v2 * 2), -> done()
+    s1.addSource 2
+    s2.addSource 1
