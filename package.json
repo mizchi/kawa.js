@@ -1,6 +1,6 @@
 {
   "name": "kawa",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Simplest reactive value",
   "main": "kawa.js",
   "scripts": {
